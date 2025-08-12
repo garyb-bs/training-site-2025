@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Website</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Hero Banner -->
+    <header class="hero">
+        <div class="hero-content">
+            <img src="images/HeaderImage.png" alt="Hero Banner Image" class="hero-image">
+        </div>
+    </header>
+
+    <!-- Main Content Sections -->
+    <main class="main-content">
+        <div class="sections-container">
+            <!-- Login Section -->
+            <section class="section-card" id="login-section">
+                <div class="section-icon">🔐</div>
+                <h2>Login</h2>
+                <p>Access your account and manage your profile</p>
+                <button class="section-button" onclick="openLogin()">Login</button>
+            </section>
+
+            <!-- Contact Form Section -->
+            <section class="section-card" id="contact-section">
+                <div class="section-icon">📧</div>
+                <h2>Contact Us</h2>
+                <p>Get in touch with our team for support</p>
+                <button class="section-button" onclick="openContact()">Contact</button>
+            </section>
+
+            <!-- Accessibility Section -->
+            <section class="section-card" id="accessibility-section">
+                <div class="section-icon">♿</div>
+                <h2>Accessibility</h2>
+                <p>Learn about our accessibility features</p>
+                <button class="section-button" onclick="openAccessibility()">Learn More</button>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal for Login -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('login-modal')">&times;</span>
+            <h2>Login</h2>
+            <form class="form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Contact -->
+    <div id="contact-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('contact-modal')">&times;</span>
+            <h2>Contact Us</h2>
+            <form class="form">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Accessibility -->
+    <div id="accessibility-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('accessibility-modal')">&times;</span>
+            <h2>Accessibility Features</h2>
+            <div class="accessibility-content">
+                <h3>Our Commitment to Accessibility</h3>
+                <p>We believe the web should be accessible to everyone. Here are some features we've implemented:</p>
+                <ul>
+                    <li>High contrast text and backgrounds</li>
+                    <li>Keyboard navigation support</li>
+                    <li>Screen reader compatibility</li>
+                    <li>Resizable text options</li>
+                    <li>Alt text for all images</li>
+                </ul>
+                <div class="accessibility-controls">
+                    <button onclick="increaseFontSize()">Increase Font Size</button>
+                    <button onclick="decreaseFontSize()">Decrease Font Size</button>
+                    <button onclick="toggleHighContrast()">Toggle High Contrast</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
