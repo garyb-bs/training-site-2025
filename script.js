@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Clear previous field errors
             clearAllFieldErrors();
             
-            // Simple validation
+            // Enhanced validation with specific error messages
             if (name && email && message) {
                 // Show success message
                 const successElement = document.createElement('div');
@@ -240,15 +240,77 @@ document.addEventListener('DOMContentLoaded', function() {
                     contactForm.reset();
                 }, 3000);
             } else {
-                // Show field-specific errors
-                if (!name) showFieldError('name', 'Name is required');
-                if (!email) showFieldError('email', 'Email is required');
-                if (!message) showFieldError('message', 'Message is required');
+                // Determine which fields are missing and show appropriate error messages
+                const missingFields = [];
+                if (!name) missingFields.push('name');
+                if (!email) missingFields.push('email');
+                if (!message) missingFields.push('message');
                 
-                // Announce error to screen readers
-                announceToScreenReader('Please fill in all required fields');
+                // Show specific error messages based on what's missing
+                if (missingFields.length === 3) {
+                    // All fields missing
+                    showFieldError('name', 'All fields are required');
+                    showFieldError('email', 'All fields are required');
+                    showFieldError('message', 'All fields are required');
+                    announceToScreenReader('All fields are required. Please fill in your name, email, and message.');
+                } else if (missingFields.length === 2) {
+                    // Two fields missing - show specific combinations
+                    if (!name && !email) {
+                        showFieldError('name', 'Name and email are required');
+                        showFieldError('email', 'Name and email are required');
+                        announceToScreenReader('Name and email are required. Please fill in both fields.');
+                    } else if (!name && !message) {
+                        showFieldError('name', 'Name and message are required');
+                        showFieldError('message', 'Name and message are required');
+                        announceToScreenReader('Name and message are required. Please fill in both fields.');
+                    } else if (!email && !message) {
+                        showFieldError('email', 'Email and message are required');
+                        showFieldError('message', 'Email and message are required');
+                        announceToScreenReader('Email and message are required. Please fill in both fields.');
+                    }
+                } else {
+                    // Single field missing
+                    if (!name) {
+                        showFieldError('name', 'Name is required');
+                        announceToScreenReader('Name is required. Please enter your full name.');
+                    }
+                    if (!email) {
+                        showFieldError('email', 'Email is required');
+                        announceToScreenReader('Email is required. Please enter your email address.');
+                    }
+                    if (!message) {
+                        showFieldError('message', 'Message is required');
+                        announceToScreenReader('Message is required. Please enter your message.');
+                    }
+                }
             }
         });
+        
+        // Add input event listeners to clear field errors when user starts typing
+        const nameField = document.getElementById('name');
+        const emailField = document.getElementById('email');
+        const messageField = document.getElementById('message');
+        
+        if (nameField) {
+            nameField.addEventListener('input', function() {
+                clearFieldError('name');
+                this.setAttribute('aria-invalid', 'false');
+            });
+        }
+        
+        if (emailField) {
+            emailField.addEventListener('input', function() {
+                clearFieldError('email');
+                this.setAttribute('aria-invalid', 'false');
+            });
+        }
+        
+        if (messageField) {
+            messageField.addEventListener('input', function() {
+                clearFieldError('message');
+                this.setAttribute('aria-invalid', 'false');
+            });
+        }
     }
 });
 
