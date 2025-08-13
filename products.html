@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Training Site</title>
+    <meta name="description" content="Browse our collection of amazing products with images, names, and prices">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styles for the products page */
+        .products-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 40px;
+        }
+        
+        .products-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .products-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .cart-header-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-header-btn:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+        
+        .product-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .add-to-cart-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .back-button {
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 40px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .back-button-container {
+            text-align: center;
+        }
+        
+        /* Cart Modal Styles */
+        .cart-modal-content {
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .cart-content {
+            padding: 20px;
+        }
+        
+        .cart-items {
+            margin-bottom: 20px;
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+        }
+        
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .cart-item-remove {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .cart-item-remove:hover {
+            background: #c0392b;
+        }
+        
+        .cart-summary {
+            border-top: 2px solid #e1e8ed;
+            padding-top: 20px;
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .total-amount {
+            color: #27ae60;
+            font-size: 1.5rem;
+        }
+        
+        .cart-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .clear-cart-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .clear-cart-btn:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .checkout-btn {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 2;
+        }
+        
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .cart-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+        
+        .cart-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                padding: 0 15px;
+            }
+            
+            .products-header h1 {
+                font-size: 2rem;
+            }
+            
+            .products-header p {
+                font-size: 1.1rem;
+            }
+            
+            .cart-modal-content {
+                max-width: 95%;
+                margin: 5% auto;
+            }
+            
+            .cart-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip to main content link for screen readers -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Products Header -->
+    <header class="products-header" role="banner" aria-label="Products page header">
+        <h1>Our Products</h1>
+        <p>Discover amazing products for every need</p>
+        <button class="cart-header-btn" onclick="openCartModal()" aria-describedby="cart-header-description">
+            🛒 View Cart (<span id="cart-count">0</span>)
+        </button>
+        <p id="cart-header-description" class="visually-hidden">Click to view your shopping cart</p>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content" role="main">
+        <div class="products-grid">
+            <!-- Product 1 -->
+            <article class="product-card" role="article" aria-labelledby="product-1-name">
+                <img src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=300&h=200&fit=crop&crop=center" 
+                     alt="Stainless steel water bottle with temperature control technology" 
+                     class="product-image">
+                <h2 id="product-1-name" class="product-name">Eco-Friendly Water Bottle</h2>
+                <div class="product-price">$24.99</div>
+                <p class="product-description">Sustainable stainless steel water bottle with temperature control technology.</p>
+                                   <button class="add-to-cart-btn" id="addToCart1" aria-describedby="product-1-name">
+                       Add to Cart
+                   </button>
+            </article>
+
+            <!-- Product 2 -->
+            <article class="product-card" role="article" aria-labelledby="product-2-name">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop&crop=center" 
+                     alt="Premium wireless Bluetooth headphones with noise cancellation" 
+                     class="product-image">
+                <h2 id="product-2-name" class="product-name">Wireless Headphones</h2>
+                <div class="product-price">$89.99</div>
+                <p class="product-description">Premium noise-cancelling headphones with 30-hour battery life.</p>
+                                   <button class="add-to-cart-btn" id="addToCart2" aria-describedby="product-2-name">
+                       Add to Cart
+                   </button>
+            </article>
+
+            <!-- Product 3 -->
+            <article class="product-card" role="article" aria-labelledby="product-3-name">
+                <img src="https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=300&h=200&fit=crop&crop=center" 
+                     alt="Smart fitness tracker with heart rate monitoring and GPS" 
+                     class="product-image">
+                <h2 id="product-3-name" class="product-name">Smart Fitness Tracker</h2>
+                <div class="product-price">$149.99</div>
+                <p class="product-description">Advanced fitness tracking with heart rate monitoring and GPS.</p>
+                                   <button class="add-to-cart-btn" id="addToCart3" aria-describedby="product-3-name">
+                       Add to Cart
+                   </button>
+            </article>
+
+            <!-- Product 4 -->
+            <article class="product-card" role="article" aria-labelledby="product-4-name">
+                <img src="https://cfimg.wowcher.co.uk/cdn-cgi/image/height=487,width=727,quality=85,format=auto/https://static.wowcher.co.uk/images/deal/22947543/857523.jpg" 
+                     alt="Portable coffee maker for travel and office use" 
+                     class="product-image">
+                <h2 id="product-4-name" class="product-name">Portable Coffee Maker</h2>
+                <div class="product-price">$79.99</div>
+                <p class="product-description">Compact coffee maker perfect for travel and office use.</p>
+                                   <button class="add-to-cart-btn" id="addToCart4" aria-describedby="product-4-name">
+                       Add to Cart
+                   </button>
+            </article>
+
+            <!-- Product 5 -->
+            <article class="product-card" role="article" aria-labelledby="product-5-name">
+                <img src="https://i.etsystatic.com/36084915/r/il/b8ddf5/6793182154/il_570xN.6793182154_7olh.jpg" 
+                     alt="Adjustable aluminum laptop stand for ergonomic workspace" 
+                     class="product-image">
+                <h2 id="product-5-name" class="product-name">Laptop Stand</h2>
+                <div class="product-price">$39.99</div>
+                <p class="product-description">Adjustable aluminum laptop stand for ergonomic workspace setup.</p>
+                                   <button class="add-to-cart-btn" id="addToCart5" aria-describedby="product-5-name">
+                       Add to Cart
+                   </button>
+            </article>
+
+            <!-- Product 6 -->
+            <article class="product-card" role="article" aria-labelledby="product-6-name">
+                <img src="https://images.mobilefun.co.uk/graphics/450pixelp/94937.jpg" 
+                     alt="Wireless charging pad compatible with Qi-enabled devices" 
+                     class="product-image">
+                <h2 id="product-6-name" class="product-name">Wireless Charging Pad</h2>
+                <div class="product-price">$34.99</div>
+                <p class="product-description">Fast wireless charging pad compatible with all Qi-enabled devices.</p>
+                                   <button class="add-to-cart-btn" id="addToCart6" aria-describedby="product-6-name">
+                       Add to Cart
+                   </button>
+            </article>
+
+            <!-- Product 7 -->
+            <article class="product-card" role="article" aria-labelledby="product-7-name">
+                <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=200&fit=crop&crop=center" 
+                     alt="100% organic cotton t-shirt in multiple colors and sizes" 
+                     class="product-image">
+                <h2 id="product-7-name" class="product-name">Organic Cotton T-Shirt</h2>
+                <div class="product-price">$29.99</div>
+                <p class="product-description">100% organic cotton t-shirt available in multiple colors and sizes.</p>
+                                   <button class="add-to-cart-btn" id="addToCart7" aria-describedby="product-7-name">
+                       Add to Cart
+                   </button>
+            </article>
+
+            <!-- Product 8 -->
+            <article class="product-card" role="article" aria-labelledby="product-8-name">
+                <img src="https://m.media-amazon.com/images/I/71G3cxrFpJS.jpg" 
+                     alt="Multi-compartment desk organizer for workspace organization" 
+                     class="product-image">
+                <h2 id="product-8-name" class="product-name">Desk Organizer</h2>
+                <div class="product-price">$19.99</div>
+                <p class="product-description">Multi-compartment desk organizer to keep your workspace tidy.</p>
+                                   <button class="add-to-cart-btn" id="addToCart8" aria-describedby="product-8-name">
+                       Add to Cart
+                   </button>
+            </article>
+        </div>
+    </main>
+
+    <!-- Back Button -->
+    <div class="back-button-container">
+        <a href="index.html" class="back-button">← Back to Homepage</a>
+    </div>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cart-modal" class="modal" role="dialog" aria-labelledby="cart-modal-heading" aria-describedby="cart-modal-description" aria-hidden="true">
+        <div class="modal-content cart-modal-content">
+            <div class="modal-header">
+                <h2 id="cart-modal-heading">Shopping Cart</h2>
+                <button type="button" class="close" onclick="closeCartModal()" aria-label="Close shopping cart">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <p id="cart-modal-description" class="visually-hidden">View items in your shopping cart</p>
+            
+            <div class="cart-content">
+                <div id="cart-items" class="cart-items">
+                    <!-- Cart items will be dynamically added here -->
+                </div>
+                
+                <div class="cart-summary">
+                    <div class="cart-total">
+                        <span class="total-label">Total:</span>
+                        <span class="total-amount" id="cart-total">$0.00</span>
+                    </div>
+                    <div class="cart-actions">
+                        <button class="clear-cart-btn" onclick="clearCart()" aria-describedby="clear-cart-description">
+                            Clear Cart
+                        </button>
+                        <button class="checkout-btn" onclick="checkout()" aria-describedby="checkout-description">
+                            Checkout
+                        </button>
+                    </div>
+                    <p id="clear-cart-description" class="visually-hidden">Remove all items from your cart</p>
+                    <p id="checkout-description" class="visually-hidden">Proceed to checkout with your selected items</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer role="contentinfo" aria-label="Site footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Training Website. All rights reserved.</p>
+            <p>This website is designed to be fully accessible and compliant with WCAG 2.1 AA standards.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        let cart = [];
+        
+        // Add to cart functionality
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productName = this.getAttribute('aria-describedby');
+                const productElement = document.getElementById(productName);
+                const productTitle = productElement.textContent;
+                const productPrice = this.parentElement.querySelector('.product-price').textContent;
+                const productImage = this.parentElement.querySelector('.product-image').src;
+                
+                // Add to cart
+                addToCart(productTitle, productPrice, productImage);
+                
+                // Announce to screen readers
+                announceToScreenReader(`${productTitle} added to cart`);
+                
+                // Visual feedback
+                this.textContent = 'Added to Cart!';
+                this.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    this.textContent = 'Add to Cart';
+                    this.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
+                }, 2000);
+            });
+        });
+        
+        // Add item to cart
+        function addToCart(name, price, image) {
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name: name,
+                    price: price,
+                    image: image,
+                    quantity: 1
+                });
+            }
+            
+            updateCartDisplay();
+        }
+        
+        // Remove item from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+            announceToScreenReader('Item removed from cart');
+        }
+        
+        // Update cart display
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const cartCount = document.getElementById('cart-count');
+            
+            // Update cart count in header
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="cart-empty">
+                        <div class="cart-empty-icon">🛒</div>
+                        <p>Your cart is empty</p>
+                    </div>
+                `;
+                cartTotal.textContent = '$0.00';
+            } else {
+                cartItems.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item" id="cartItem">
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${item.price} x ${item.quantity}</div>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${index})" aria-label="Remove ${item.name} from cart">
+                            Remove
+                        </button>
+                    </div>
+                `).join('');
+                
+                // Calculate total
+                const total = cart.reduce((sum, item) => {
+                    const price = parseFloat(item.price.replace('$', ''));
+                    return sum + (price * item.quantity);
+                }, 0);
+                
+                cartTotal.textContent = `$${total.toFixed(2)}`;
+            }
+        }
+        
+        // Clear cart
+        function clearCart() {
+            cart = [];
+            updateCartDisplay();
+            announceToScreenReader('Cart cleared');
+        }
+        
+        // Checkout function
+        function checkout() {
+            if (cart.length === 0) {
+                announceToScreenReader('Cart is empty, cannot checkout');
+                return;
+            }
+            
+            announceToScreenReader('Proceeding to checkout');
+            // In a real application, this would redirect to a checkout page
+            alert('Checkout functionality would be implemented here!');
+        }
+        
+        // Open cart modal
+        function openCartModal() {
+            const modal = document.getElementById('cart-modal');
+            modal.style.display = 'block';
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            
+            // Focus management
+            setTimeout(() => {
+                const firstFocusable = modal.querySelector('button, input, [tabindex]:not([tabindex="-1"])');
+                if (firstFocusable) firstFocusable.focus();
+            }, 100);
+        }
+        
+        // Close cart modal
+        function closeCartModal() {
+            const modal = document.getElementById('cart-modal');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Screen reader announcements
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'assertive');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'visually-hidden';
+            announcement.textContent = message;
+            
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('cart-modal');
+            if (event.target === modal) {
+                closeCartModal();
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('cart-modal');
+                if (modal.style.display === 'block') {
+                    closeCartModal();
+                }
+            }
+        });
+        
+        // Initialize cart display
+        updateCartDisplay();
+    </script>
+</body>
+</html>
