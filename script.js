@@ -77,6 +77,11 @@ function clearMessages(modalId) {
         msg.style.display = 'none';
         msg.textContent = '';
     });
+    
+    // Also clear contact form messages if it's the contact modal
+    if (modalId === 'contact-modal') {
+        clearContactMessages();
+    }
 }
 
 // Close modal when clicking outside of it
@@ -219,95 +224,95 @@ document.addEventListener('DOMContentLoaded', function() {
             // Clear previous field errors
             clearAllFieldErrors();
             
-            // Enhanced validation with specific error messages
+            // Enhanced validation with single error message
             if (name && email && message) {
-                // Show success message
-                const successElement = document.createElement('div');
-                successElement.className = 'success-message';
-                successElement.textContent = 'Thank you for your message! We\'ll get back to you soon.';
-                successElement.setAttribute('role', 'status');
-                successElement.setAttribute('aria-live', 'polite');
+                // Validate email format
+                if (!isValidEmail(email)) {
+                    showEmailFormatError();
+                    announceToScreenReader('Please enter a valid email address format');
+                    return;
+                }
                 
-                // Insert success message before the form
-                contactForm.parentNode.insertBefore(successElement, contactForm);
+                // Show success message using dedicated element
+                const successElement = document.getElementById('contact-success');
+                const errorElement = document.getElementById('contact-error');
+                
+                // Hide error message and show success message
+                errorElement.style.display = 'none';
+                successElement.textContent = 'Thank you for your message! We\'ll get back to you soon.';
+                successElement.style.display = 'block';
                 
                 // Announce success to screen readers
                 announceToScreenReader('Message sent successfully! We\'ll get back to you soon.');
                 
-                // Close modal after 3 seconds
-                setTimeout(() => {
-                    closeModal('contact-modal');
-                    contactForm.reset();
-                }, 3000);
+                // Reset the form but keep modal open
+                contactForm.reset();
             } else {
-                // Determine which fields are missing and show appropriate error messages
+                // Determine which fields are missing and show appropriate error message
                 const missingFields = [];
                 if (!name) missingFields.push('name');
                 if (!email) missingFields.push('email');
                 if (!message) missingFields.push('message');
                 
-                // Show specific error messages based on what's missing
+                // Show single error message based on what's missing
+                const errorElement = document.getElementById('contact-error');
+                let errorMessage = '';
+                
                 if (missingFields.length === 3) {
-                    // All fields missing
-                    showFieldError('name', 'All fields are required');
-                    showFieldError('email', 'All fields are required');
-                    showFieldError('message', 'All fields are required');
-                    announceToScreenReader('All fields are required. Please fill in your name, email, and message.');
+                    // All fields empty
+                    errorMessage = 'All fields are required. Please fill in your name, email, and message.';
                 } else if (missingFields.length === 2) {
-                    // Two fields missing - show specific combinations
+                    // Two fields empty - show specific combinations
                     if (!name && !email) {
-                        showFieldError('name', 'Name and email are required');
-                        showFieldError('email', 'Name and email are required');
-                        announceToScreenReader('Name and email are required. Please fill in both fields.');
+                        errorMessage = 'Name and email are required. Please fill in both fields.';
                     } else if (!name && !message) {
-                        showFieldError('name', 'Name and message are required');
-                        showFieldError('message', 'Name and message are required');
-                        announceToScreenReader('Name and message are required. Please fill in both fields.');
+                        errorMessage = 'Name and message are required. Please fill in both fields.';
                     } else if (!email && !message) {
-                        showFieldError('email', 'Email and message are required');
-                        showFieldError('message', 'Email and message are required');
-                        announceToScreenReader('Email and message are required. Please fill in both fields.');
+                        errorMessage = 'Email and message are required. Please fill in both fields.';
                     }
                 } else {
-                    // Single field missing
+                    // One field empty
                     if (!name) {
-                        showFieldError('name', 'Name is required');
-                        announceToScreenReader('Name is required. Please enter your full name.');
-                    }
-                    if (!email) {
-                        showFieldError('email', 'Email is required');
-                        announceToScreenReader('Email is required. Please enter your email address.');
-                    }
-                    if (!message) {
-                        showFieldError('message', 'Message is required');
-                        announceToScreenReader('Message is required. Please enter your message.');
+                        errorMessage = 'Name is required. Please enter your full name.';
+                    } else if (!email) {
+                        errorMessage = 'Email is required. Please enter your email address.';
+                    } else if (!message) {
+                        errorMessage = 'Message is required. Please enter your message.';
                     }
                 }
+                
+                // Display the error message
+                errorElement.textContent = errorMessage;
+                errorElement.style.display = 'block';
+                
+                // Announce error to screen readers
+                announceToScreenReader(errorMessage);
             }
         });
         
-        // Add input event listeners to clear field errors when user starts typing
+        // Add input event listeners to clear error and success messages when user starts typing
         const nameField = document.getElementById('name');
         const emailField = document.getElementById('email');
         const messageField = document.getElementById('message');
         
         if (nameField) {
             nameField.addEventListener('input', function() {
-                clearFieldError('name');
+                clearContactMessages();
                 this.setAttribute('aria-invalid', 'false');
             });
         }
         
         if (emailField) {
             emailField.addEventListener('input', function() {
-                clearFieldError('email');
+                clearContactMessages();
+                clearEmailError();
                 this.setAttribute('aria-invalid', 'false');
             });
         }
         
         if (messageField) {
             messageField.addEventListener('input', function() {
-                clearFieldError('message');
+                clearContactMessages();
                 this.setAttribute('aria-invalid', 'false');
             });
         }
@@ -346,6 +351,53 @@ function clearAllFieldErrors() {
     inputs.forEach(input => {
         input.setAttribute('aria-invalid', 'false');
     });
+    
+    // Also clear email-specific error
+    clearEmailError();
+}
+
+// Clear contact form error and success messages
+function clearContactMessages() {
+    const errorElement = document.getElementById('contact-error');
+    const successElement = document.getElementById('contact-success');
+    
+    if (errorElement) {
+        errorElement.style.display = 'none';
+        errorElement.textContent = '';
+    }
+    
+    if (successElement) {
+        successElement.style.display = 'none';
+        successElement.textContent = '';
+    }
+}
+
+// Email validation functions
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function showEmailFormatError() {
+    const emailErrorElement = document.getElementById('email-error');
+    if (emailErrorElement) {
+        emailErrorElement.textContent = 'Please enter a valid email address format';
+        emailErrorElement.style.display = 'block';
+    }
+    
+    // Also set aria-invalid on the email field
+    const emailField = document.getElementById('email');
+    if (emailField) {
+        emailField.setAttribute('aria-invalid', 'true');
+    }
+}
+
+function clearEmailError() {
+    const emailErrorElement = document.getElementById('email-error');
+    if (emailErrorElement) {
+        emailErrorElement.style.display = 'none';
+        emailErrorElement.textContent = '';
+    }
 }
 
 // Accessibility features
