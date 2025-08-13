@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Issues - Training</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styles for the accessibility issues page */
+        .issue-highlight {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        
+        .issue-list {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        
+        .issue-list h3 {
+            color: #721c24;
+            margin-bottom: 15px;
+        }
+        
+        .issue-list ul {
+            color: #721c24;
+            padding-left: 20px;
+        }
+        
+        .issue-list li {
+            margin-bottom: 10px;
+        }
+        
+        .back-button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        .back-button:hover {
+            background: #0056b3;
+        }
+        
+        /* Poor contrast colors for demonstration */
+        .poor-contrast {
+            background: #f0f0f0;
+            color: #e0e0e0;
+        }
+        
+        .tiny-text {
+            font-size: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- No skip links - accessibility issue #1 -->
+    
+    <!-- No proper header structure - accessibility issue #2 -->
+    <div class="hero">
+        <div class="hero-content">
+            <img src="images/HeaderImage.png" alt="" class="hero-image">
+            <!-- No H1 heading - accessibility issue #3 -->
+            <div class="poor-contrast">Welcome to Accessibility Issues Page</div>
+            <p class="tiny-text">This page demonstrates what NOT to do for accessibility</p>
+        </div>
+    </div>
+
+    <!-- Main content without proper structure - accessibility issue #4 -->
+    <div class="main-content">
+        <div class="sections-container">
+            
+            <!-- Section with poor contrast and no heading - accessibility issue #5 -->
+            <div class="section-card poor-contrast">
+                <div class="section-icon">🚫</div>
+                <!-- No heading - accessibility issue #6 -->
+                <p>This section has no heading and poor contrast</p>
+                <button class="section-button" onclick="alert('Button clicked!')">Click Me</button>
+                <!-- No form labels - accessibility issue #7 -->
+                <input type="text" placeholder="Enter text here">
+            </div>
+
+            <!-- Section with color-only information - accessibility issue #8 -->
+            <div class="section-card">
+                <div class="section-icon">🎨</div>
+                <h2>Color Only Information</h2>
+                <p>Required fields are marked in <span style="color: red;">red</span> only</p>
+                <p>Optional fields are marked in <span style="color: green;">green</span> only</p>
+                <!-- No aria-labels or proper form structure - accessibility issue #9 -->
+                <form>
+                    <input type="text" style="border: 2px solid red;">
+                    <input type="email" style="border: 2px solid green;">
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
+            <!-- Section with no alt text - accessibility issue #10 -->
+            <div class="section-card">
+                <div class="section-icon">🖼️</div>
+                <h2>Images Without Alt Text</h2>
+                <p>This image has no alt text:</p>
+                <img src="images/HeaderImage.png" class="hero-image">
+                <!-- No alt attribute - accessibility issue #11 -->
+            </div>
+
+            <!-- Section with poor form validation - accessibility issue #12 -->
+            <div class="section-card">
+                <div class="section-icon">📝</div>
+                <h2>Poor Form Validation</h2>
+                <p>Form errors are only shown in red text with no additional context</p>
+                <form>
+                    <input type="text" id="name" required>
+                    <input type="email" id="email" required>
+                    <textarea id="message" required></textarea>
+                    <button type="submit">Send</button>
+                </form>
+                <!-- No error messages or aria-invalid - accessibility issue #13 -->
+            </div>
+
+            <!-- Section with poor focus management - accessibility issue #14 -->
+            <div class="section-card">
+                <div class="section-icon">⌨️</div>
+                <h2>Poor Focus Management</h2>
+                <p>Tab order is not logical and focus can get trapped</p>
+                <button class="section-button" tabindex="5">First Button</button>
+                <button class="section-button" tabindex="3">Second Button</button>
+                <button class="section-button" tabindex="1">Third Button</button>
+            </div>
+
+            <!-- Section with poor keyboard navigation - accessibility issue #15 -->
+            <div class="section-card">
+                <div class="section-icon">🔒</div>
+                <h2>Keyboard Navigation Issues</h2>
+                <p>Some elements cannot be reached with keyboard only</p>
+                <div onclick="alert('Clickable div')" style="cursor: pointer; padding: 10px; background: #f0f0f0;">
+                    This div is clickable but not keyboard accessible
+                </div>
+                <!-- No keyboard support - accessibility issue #16 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Issue summary section -->
+    <div class="issue-highlight">
+        <h2>Accessibility Issues Summary</h2>
+        <p>This page intentionally contains key accessibility issues for training purposes. These issues can be easily detected by automated accessibility testing tools.</p>
+    </div>
+
+    <div class="issue-list">
+        <h3>Key Accessibility Issues for Automated Testing:</h3>
+        <ul>
+            <li>No skip links for keyboard users</li>
+            <li>Poor heading structure (no H1, missing headings)</li>
+            <li>Images without alt text</li>
+            <li>Poor color contrast ratios</li>
+            <li>Color-only information (no text alternatives)</li>
+            <li>Poor keyboard navigation and focus management</li>
+            <li>No form labels or proper associations</li>
+            <li>Poor tab order (tabindex misuse)</li>
+            <li>Clickable elements without keyboard support</li>
+            <li>No form validation feedback</li>
+        </ul>
+    </div>
+
+    <!-- Back button -->
+    <div style="text-align: center; padding: 40px;">
+        <a href="index.html" class="back-button">← Back to Accessible Homepage</a>
+    </div>
+
+    <!-- No proper JavaScript - accessibility issue #17 -->
+    <script>
+        // Poor error handling - accessibility issue #18
+        function showError(message) {
+            alert('Error: ' + message);
+        }
+        
+        // No keyboard event handling - accessibility issue #19
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'BUTTON') {
+                console.log('Button clicked');
+            }
+        });
+        
+        // Poor focus management - accessibility issue #20
+        window.onload = function() {
+            // No focus management
+        };
+    </script>
+</body>
+</html>

@@ -1,22 +1,82 @@
-// Modal functionality
+// Modal functionality with enhanced accessibility
 function openLogin() {
-    document.getElementById('login-modal').style.display = 'block';
+    const modal = document.getElementById('login-modal');
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    
+    // Focus management
+    setTimeout(() => manageFocus('login-modal'), 100);
+    
+    // Announce modal opening to screen readers
+    announceToScreenReader('Login modal opened');
 }
 
 function openContact() {
-    document.getElementById('contact-modal').style.display = 'block';
+    const modal = document.getElementById('contact-modal');
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    
+    // Focus management
+    setTimeout(() => manageFocus('contact-modal'), 100);
+    
+    // Announce modal opening to screen readers
+    announceToScreenReader('Contact modal opened');
 }
 
 function openAccessibility() {
-    document.getElementById('accessibility-modal').style.display = 'block';
+    const modal = document.getElementById('accessibility-modal');
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    
+    // Focus management
+    setTimeout(() => manageFocus('accessibility-modal'), 100);
+    
+    // Announce modal opening to screen readers
+    announceToScreenReader('Accessibility information modal opened');
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
+    const modal = document.getElementById(modalId);
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'auto';
+    
+    // Return focus to the button that opened the modal
+    const triggerButton = getTriggerButton(modalId);
+    if (triggerButton) {
+        triggerButton.focus();
+    }
+    
+    // Clear any error/success messages
+    clearMessages(modalId);
+    
+    // Announce modal closing to screen readers
+    announceToScreenReader('Modal closed');
+}
+
+// Get the button that triggered the modal
+function getTriggerButton(modalId) {
+    const buttonMap = {
+        'login-modal': 'loginButton',
+        'contact-modal': 'contactButton',
+        'accessibility-modal': 'accessibilityButton'
+    };
+    
+    const buttonId = buttonMap[modalId];
+    return buttonId ? document.getElementById(buttonId) : null;
+}
+
+// Clear error and success messages
+function clearMessages(modalId) {
+    const modal = document.getElementById(modalId);
+    const errorMessages = modal.querySelectorAll('.error-message, .success-message, .field-error');
+    errorMessages.forEach(msg => {
+        msg.style.display = 'none';
+        msg.textContent = '';
+    });
 }
 
 // Close modal when clicking outside of it
@@ -24,8 +84,8 @@ window.onclick = function(event) {
     const modals = document.querySelectorAll('.modal');
     modals.forEach(modal => {
         if (event.target === modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            const modalId = modal.id;
+            closeModal(modalId);
         }
     });
 }
@@ -36,14 +96,14 @@ document.addEventListener('keydown', function(event) {
         const modals = document.querySelectorAll('.modal');
         modals.forEach(modal => {
             if (modal.style.display === 'block') {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+                const modalId = modal.id;
+                closeModal(modalId);
             }
         });
     }
 });
 
-// Form handling
+// Form handling with enhanced accessibility
 document.addEventListener('DOMContentLoaded', function() {
     // Login form
     const loginForm = document.querySelector('#login-modal .form');
@@ -53,43 +113,54 @@ document.addEventListener('DOMContentLoaded', function() {
         const passwordInput = document.getElementById('password');
         
         usernameInput.addEventListener('input', function() {
-            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+            // Clear field-specific errors
+            clearFieldError('username');
+            // Update ARIA invalid state
+            this.setAttribute('aria-invalid', 'false');
         });
         
         passwordInput.addEventListener('input', function() {
-            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+            // Clear field-specific errors
+            clearFieldError('password');
+            // Update ARIA invalid state
+            this.setAttribute('aria-invalid', 'false');
         });
         
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const username = usernameInput.value;
-            const password = passwordInput.value;
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            // Clear previous messages
+            clearMessages('login-modal');
             
             // Simple validation
             if (username && password) {
                 // Check if credentials are "correct" (demo purposes)
                 if (username === 'student' && password === 'Password123') {
                     // Show success message
-                    const errorElement = document.getElementById('login-error');
-                    errorElement.textContent = 'Login successful! Welcome!';
-                    errorElement.style.color = '#27ae60';
-                    errorElement.style.backgroundColor = '#d5f4e6';
-                    errorElement.style.borderColor = '#27ae60';
-                    errorElement.style.display = 'block';
+                    const successElement = document.getElementById('success');
+                    const errorElement = document.getElementById('error');
                     
-                    // Close modal after 2 seconds
-                    setTimeout(() => {
-                        closeModal('login-modal');
-                        loginForm.reset();
-                        // Reset error message styling
-                        errorElement.style.color = '#e74c3c';
-                        errorElement.style.backgroundColor = '#fdf2f2';
-                        errorElement.style.borderColor = '#f5c6cb';
-                        errorElement.style.display = 'none';
-                    }, 2000);
+                    // Hide any existing error message
+                    errorElement.style.display = 'none';
+                    
+                    // Show success message
+                    successElement.textContent = 'Login successful! Welcome!';
+                    successElement.style.display = 'block';
+                    
+                    // Reset form but keep modal open
+                    loginForm.reset();
+                    
+                    // Announce success to screen readers
+                    announceToScreenReader('Login successful! Welcome!');
                 } else {
                     // Show error message for incorrect credentials based on what's wrong
-                    const errorElement = document.getElementById('login-error');
+                    const errorElement = document.getElementById('error');
                     let errorMessage = '';
                     
                     if (username !== 'student' && password !== 'Password123') {
@@ -101,26 +172,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     errorElement.textContent = errorMessage;
-                    errorElement.style.color = '#e74c3c';
-                    errorElement.style.backgroundColor = '#fdf2f2';
-                    errorElement.style.borderColor = '#f5c6cb';
                     errorElement.style.display = 'block';
+                    
+                    // Announce error to screen readers
+                    announceToScreenReader(errorMessage);
                 }
             } else {
                 // Show appropriate error message based on what's missing
-                const errorElement = document.getElementById('login-error');
+                const errorElement = document.getElementById('error');
                 let errorMessage = '';
                 
                 if (!username && !password) {
                     errorMessage = 'Your username and password are invalid!';
+                    showFieldError('username', 'Username is required');
+                    showFieldError('password', 'Password is required');
+                    usernameInput.setAttribute('aria-invalid', 'true');
+                    passwordInput.setAttribute('aria-invalid', 'true');
                 } else if (!username) {
                     errorMessage = 'Your username is invalid!';
+                    showFieldError('username', 'Username is required');
+                    usernameInput.setAttribute('aria-invalid', 'true');
                 } else if (!password) {
                     errorMessage = 'Your password is invalid!';
+                    showFieldError('password', 'Password is required');
+                    passwordInput.setAttribute('aria-invalid', 'true');
                 }
                 
                 errorElement.textContent = errorMessage;
                 errorElement.style.display = 'block';
+                
+                // Announce error to screen readers
+                announceToScreenReader(errorMessage);
             }
         });
     }
@@ -130,30 +212,91 @@ document.addEventListener('DOMContentLoaded', function() {
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            // Clear previous field errors
+            clearAllFieldErrors();
             
             // Simple validation
             if (name && email && message) {
-                // Thank you for your message! We'll get back to you soon.
-                closeModal('contact-modal');
-                contactForm.reset();
+                // Show success message
+                const successElement = document.createElement('div');
+                successElement.className = 'success-message';
+                successElement.textContent = 'Thank you for your message! We\'ll get back to you soon.';
+                successElement.setAttribute('role', 'status');
+                successElement.setAttribute('aria-live', 'polite');
+                
+                // Insert success message before the form
+                contactForm.parentNode.insertBefore(successElement, contactForm);
+                
+                // Announce success to screen readers
+                announceToScreenReader('Message sent successfully! We\'ll get back to you soon.');
+                
+                // Close modal after 3 seconds
+                setTimeout(() => {
+                    closeModal('contact-modal');
+                    contactForm.reset();
+                }, 3000);
             } else {
-                // Please fill in all fields
+                // Show field-specific errors
+                if (!name) showFieldError('name', 'Name is required');
+                if (!email) showFieldError('email', 'Email is required');
+                if (!message) showFieldError('message', 'Message is required');
+                
+                // Announce error to screen readers
+                announceToScreenReader('Please fill in all required fields');
             }
         });
     }
 });
+
+// Field error management
+function showFieldError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    const errorElement = document.getElementById(fieldId + '-error');
+    
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+        field.setAttribute('aria-invalid', 'true');
+    }
+}
+
+function clearFieldError(fieldId) {
+    const errorElement = document.getElementById(fieldId + '-error');
+    if (errorElement) {
+        errorElement.textContent = '';
+        errorElement.style.display = 'none';
+    }
+}
+
+function clearAllFieldErrors() {
+    const fieldErrors = document.querySelectorAll('.field-error');
+    fieldErrors.forEach(error => {
+        error.textContent = '';
+        error.style.display = 'none';
+    });
+    
+    // Reset aria-invalid attributes
+    const inputs = document.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+        input.setAttribute('aria-invalid', 'false');
+    });
+}
 
 // Accessibility features
 let currentFontSize = 16;
 let highContrastMode = false;
 
 function increaseFontSize() {
-    currentFontSize += 2;
-    document.body.style.fontSize = currentFontSize + 'px';
-    updateAccessibilityStatus();
+    if (currentFontSize < 24) {
+        currentFontSize += 2;
+        document.body.style.fontSize = currentFontSize + 'px';
+        updateAccessibilityStatus();
+        announceToScreenReader(`Font size increased to ${currentFontSize} pixels`);
+    }
 }
 
 function decreaseFontSize() {
@@ -161,6 +304,7 @@ function decreaseFontSize() {
         currentFontSize -= 2;
         document.body.style.fontSize = currentFontSize + 'px';
         updateAccessibilityStatus();
+        announceToScreenReader(`Font size decreased to ${currentFontSize} pixels`);
     }
 }
 
@@ -186,6 +330,8 @@ function toggleHighContrast() {
             modal.style.backgroundColor = '#000';
             modal.style.color = '#fff';
         });
+        
+        announceToScreenReader('High contrast mode enabled');
     } else {
         document.body.classList.remove('high-contrast');
         document.body.style.backgroundColor = '#f8f9fa';
@@ -205,21 +351,45 @@ function toggleHighContrast() {
             modal.style.backgroundColor = 'white';
             modal.style.color = '#333';
         });
+        
+        announceToScreenReader('High contrast mode disabled');
     }
     
     updateAccessibilityStatus();
 }
 
 function updateAccessibilityStatus() {
-    const statusElement = document.querySelector('.accessibility-status');
-    if (statusElement) {
-        statusElement.textContent = `Font Size: ${currentFontSize}px | High Contrast: ${highContrastMode ? 'On' : 'Off'}`;
+    const fontStatusElement = document.getElementById('font-size-status');
+    const contrastStatusElement = document.getElementById('contrast-status');
+    
+    if (fontStatusElement) {
+        fontStatusElement.textContent = `Font Size: ${currentFontSize}px`;
+    }
+    
+    if (contrastStatusElement) {
+        contrastStatusElement.textContent = `High Contrast: ${highContrastMode ? 'On' : 'Off'}`;
     }
 }
 
-// Add keyboard navigation support
+// Screen reader announcements
+function announceToScreenReader(message) {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'assertive');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.className = 'visually-hidden';
+    announcement.textContent = message;
+    
+    document.body.appendChild(announcement);
+    
+    // Remove after announcement
+    setTimeout(() => {
+        document.body.removeChild(announcement);
+    }, 1000);
+}
+
+// Enhanced keyboard navigation support
 document.addEventListener('keydown', function(event) {
-    // Tab navigation for modals
+    // Tab navigation for modals with focus trapping
     if (event.key === 'Tab') {
         const activeModal = document.querySelector('.modal[style*="block"]');
         if (activeModal) {
@@ -240,35 +410,67 @@ document.addEventListener('keydown', function(event) {
             }
         }
     }
+    
+    // Enter key support for buttons
+    if (event.key === 'Enter') {
+        const activeElement = document.activeElement;
+        if (activeElement.tagName === 'BUTTON' && !activeElement.disabled) {
+            activeElement.click();
+        }
+    }
+    
+    // Space key support for buttons
+    if (event.key === ' ') {
+        const activeElement = document.activeElement;
+        if (activeElement.tagName === 'BUTTON' && !activeElement.disabled) {
+            event.preventDefault();
+            activeElement.click();
+        }
+    }
 });
 
-// Add focus management for better accessibility
+// Focus management for better accessibility
 function manageFocus(modalId) {
     const modal = document.getElementById(modalId);
     const focusableElements = modal.querySelectorAll('button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
     
     if (focusableElements.length > 0) {
+        // Focus the first focusable element
         focusableElements[0].focus();
+        
+        // Set tabindex for focus trapping
+        focusableElements.forEach((element, index) => {
+            element.setAttribute('tabindex', index === 0 ? '0' : '0');
+        });
     }
 }
 
 // Enhanced modal opening with focus management
 function openLogin() {
-    document.getElementById('login-modal').style.display = 'block';
+    const modal = document.getElementById('login-modal');
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     setTimeout(() => manageFocus('login-modal'), 100);
+    announceToScreenReader('Login modal opened');
 }
 
 function openContact() {
-    document.getElementById('contact-modal').style.display = 'block';
+    const modal = document.getElementById('contact-modal');
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     setTimeout(() => manageFocus('contact-modal'), 100);
+    announceToScreenReader('Contact modal opened');
 }
 
 function openAccessibility() {
-    document.getElementById('accessibility-modal').style.display = 'block';
+    const modal = document.getElementById('accessibility-modal');
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     setTimeout(() => manageFocus('accessibility-modal'), 100);
+    announceToScreenReader('Accessibility information modal opened');
 }
 
 // Add smooth scrolling for better UX
@@ -281,6 +483,11 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 behavior: 'smooth',
                 block: 'start'
             });
+            
+            // Focus the target for accessibility
+            if (target.hasAttribute('tabindex')) {
+                target.focus();
+            }
         }
     });
 });
@@ -290,10 +497,12 @@ function addLoadingState(button) {
     const originalText = button.textContent;
     button.textContent = 'Loading...';
     button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
     
     setTimeout(() => {
         button.textContent = originalText;
         button.disabled = false;
+        button.setAttribute('aria-busy', 'false');
     }, 2000);
 }
 
@@ -314,5 +523,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.click();
             }
         });
+        
+        // Add keyboard support for section cards
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const button = card.querySelector('.section-button');
+                if (button) {
+                    button.click();
+                }
+            }
+        });
+        
+        // Make section cards focusable
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', card.querySelector('h2').textContent + ' section');
     });
+    
+    // Initialize accessibility status
+    updateAccessibilityStatus();
+});
+
+// Add page load announcement for screen readers
+window.addEventListener('load', function() {
+    announceToScreenReader('Training website loaded successfully. Use Tab key to navigate and Enter or Space to activate buttons.');
 }); 
