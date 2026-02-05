@@ -57,7 +57,7 @@ body.high-contrast *:focus {
 
 /* Hero Banner */
 .hero {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     text-align: center;
     padding: 60px 20px;
@@ -220,7 +220,7 @@ body.high-contrast *:focus {
 }
 
 .section-button {
-    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
     border: none;
     padding: 15px 30px;
@@ -280,7 +280,7 @@ body.high-contrast *:focus {
 }
 
 .modal-header {
-    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
     padding: 25px 30px;
     border-radius: 20px 20px 0 0;
@@ -352,7 +352,7 @@ body.high-contrast *:focus {
 }
 
 .submit-btn {
-    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
     border: none;
     padding: 15px 30px;
